@@ -157,7 +157,7 @@ Function Validate-StandardArguments
         $Path,
         $ProductId,
         $Name,
-        $ForceExtension = [System.Management.Automation.Language.NullString]::Value
+        [string] $ForceExtension = [System.Management.Automation.Language.NullString]::Value
     )
     
     Trace-Message "Validate-StandardArguments, Path was $Path"
@@ -177,7 +177,7 @@ Function Validate-StandardArguments
         Throw-InvalidArgumentException ($LocalizedData.InvalidPath -f $Path) "Path"
     }
     
-    if ($ForceExtension -ne $null)
+    if ($ForceExtension -ne [string]::Empty)
     {
         $pathExt = $ForceExtension
     }
@@ -638,7 +638,7 @@ function Set-TargetResource
     $downloadedFileName = $null
     try
     {
-        if ($ForceExtension -ne $null)
+        if ($ForceExtension -ne [string]::Empty)
         {
             $fileExtension = $ForceExtension
         }
