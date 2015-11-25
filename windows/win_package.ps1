@@ -616,7 +616,7 @@ function Set-TargetResource
     
     if((Test-TargetResource -Ensure $Ensure -Name $Name -Path $Path -ProductId $ProductId `
         -InstalledCheckRegKey $InstalledCheckRegKey -InstalledCheckRegValueName $InstalledCheckRegValueName `
-        -InstalledCheckRegValueData $InstalledCheckRegValueData))
+        -InstalledCheckRegValueData $InstalledCheckRegValueData)) -ForceExtension $ForceExtension
     {
         return
     }
