@@ -156,7 +156,8 @@ Function Validate-StandardArguments
     param(
         $Path,
         $ProductId,
-        $Name
+        $Name,
+        $ForceExtension
     )
     
     Trace-Message "Validate-StandardArguments, Path was $Path"
@@ -176,7 +177,16 @@ Function Validate-StandardArguments
         Throw-InvalidArgumentException ($LocalizedData.InvalidPath -f $Path) "Path"
     }
     
-    $pathExt = [System.IO.Path]::GetExtension($Path)
+    if ($ForceExtension -ne $null)
+    {
+        $pathExt = $ForceExtension
+    }
+    else
+    {
+        $pathExt = [System.IO.Path]::GetExtension($Path)
+    }
+    
+    
     Trace-Message "The path extension was $pathExt"
     if(-not @(".msi",".exe") -contains $pathExt.ToLower())
     {
@@ -315,10 +325,11 @@ function Test-TargetResource
 
         [string] $InstalledCheckRegValueName,
 
-        [string] $InstalledCheckRegValueData
+        [string] $InstalledCheckRegValueData,
+        [String] $ForceExtension
     )
     
-    $uri, $identifyingNumber = Validate-StandardArguments $Path $ProductId $Name
+    $uri, $identifyingNumber = Validate-StandardArguments $Path $ProductId $Name $ForceExtension
     $product = Get-ProductEntry $Name $identifyingNumber $InstalledCheckRegKey $InstalledCheckRegValueName $InstalledCheckRegValueData
     Trace-Message "Ensure is $Ensure"
     if($product)
@@ -401,11 +412,13 @@ function Get-TargetResource
 
         [string] $InstalledCheckRegValueName,
 
-        [string] $InstalledCheckRegValueData
+        [string] $InstalledCheckRegValueData,
+        
+        [string] $ForceExtension
     )
     
     #If the user gave the ProductId then we derive $identifyingNumber
-    $uri, $identifyingNumber = Validate-StandardArguments $Path $ProductId $Name
+    $uri, $identifyingNumber = Validate-StandardArguments $Path $ProductId $Name $ForceExtension
     
     $localMsi = $uri.IsFile -and -not $uri.IsUnc
     
@@ -594,7 +607,9 @@ function Set-TargetResource
 
         [string] $InstalledCheckRegValueName,
 
-        [string] $InstalledCheckRegValueData
+        [string] $InstalledCheckRegValueData,
+        
+        [string] $ForceExtension,
     )
     
     $ErrorActionPreference = "Stop"
@@ -606,7 +621,7 @@ function Set-TargetResource
         return
     }
 
-    $uri, $identifyingNumber = Validate-StandardArguments $Path $ProductId $Name
+    $uri, $identifyingNumber = Validate-StandardArguments $Path $ProductId $Name $ForceExtension
     
     #Path gets overwritten in the download code path. Retain the user's original Path in case the install succeeded
     #but the named package wasn't present on the system afterward so we can give a better message
@@ -623,7 +638,15 @@ function Set-TargetResource
     $downloadedFileName = $null
     try
     {
-        $fileExtension = [System.IO.Path]::GetExtension($Path).ToLower()
+        if ($ForceFileExtension -ne $null)
+        {
+            $fileExtension = $forceFileExtension
+        }
+        Else
+        {
+            $fileExtension = [System.IO.Path]::GetExtension($Path).ToLower()
+        }
+        
         if($LogPath)
         {
             try
@@ -1273,6 +1296,7 @@ if ($ensure -eq $null)
 $username = Get-Attr -obj $params -name user_name
 $password = Get-Attr -obj $params -name user_password
 $return_code = Get-Attr -obj $params -name expected_return_code -default 0
+$force_extension = Get-Attr -obj $params -name force_extension
 
 #Construct the DSC param hashtable
 $dscparams = @{
@@ -1290,6 +1314,11 @@ if (($username -ne $null) -and ($password -ne $null))
     $secpassword = $password | ConvertTo-SecureString -AsPlainText -Force
     $credential = New-Object pscredential -ArgumentList $username, $secpassword
     $dscparams.add("Credential",$credential)
+}
+
+if ($force_extension -ne $null)
+{
+    $dscparams.add("ForceExtension",$force_extension)
 }
 
 #Always return the name
