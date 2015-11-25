@@ -638,9 +638,9 @@ function Set-TargetResource
     $downloadedFileName = $null
     try
     {
-        if ($ForceFileExtension -ne $null)
+        if ($ForceExtension -ne $null)
         {
-            $fileExtension = $forceFileExtension
+            $fileExtension = $ForceExtension
         }
         Else
         {
