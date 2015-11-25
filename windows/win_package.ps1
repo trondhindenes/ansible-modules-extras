@@ -1296,7 +1296,7 @@ if ($ensure -eq $null)
 $username = Get-Attr -obj $params -name user_name
 $password = Get-Attr -obj $params -name user_password
 $return_code = Get-Attr -obj $params -name expected_return_code -default 0
-$force_extension = Get-Attr -obj $params -name force_extension
+$force_extension = Get-Attr -obj $params -name force_extension -ValidateSet ".msi",".exe"
 
 #Construct the DSC param hashtable
 $dscparams = @{
