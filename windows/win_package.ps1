@@ -157,7 +157,7 @@ Function Validate-StandardArguments
         $Path,
         $ProductId,
         $Name,
-        $ForceExtension
+        $ForceExtension = [System.Management.Automation.Language.NullString]::Value
     )
     
     Trace-Message "Validate-StandardArguments, Path was $Path"
@@ -326,7 +326,7 @@ function Test-TargetResource
         [string] $InstalledCheckRegValueName,
 
         [string] $InstalledCheckRegValueData,
-        [String] $ForceExtension
+        [String] $ForceExtension = [System.Management.Automation.Language.NullString]::Value
     )
     
     $uri, $identifyingNumber = Validate-StandardArguments $Path $ProductId $Name $ForceExtension
@@ -609,7 +609,7 @@ function Set-TargetResource
 
         [string] $InstalledCheckRegValueData,
         
-        [string] $ForceExtension
+        [string] $ForceExtension = [System.Management.Automation.Language.NullString]::Value
     )
     
     $ErrorActionPreference = "Stop"
