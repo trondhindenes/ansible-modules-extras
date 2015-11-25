@@ -609,7 +609,7 @@ function Set-TargetResource
 
         [string] $InstalledCheckRegValueData,
         
-        [string] $ForceExtension,
+        [string] $ForceExtension
     )
     
     $ErrorActionPreference = "Stop"
