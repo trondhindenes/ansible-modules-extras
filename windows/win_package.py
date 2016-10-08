@@ -70,6 +70,9 @@ options:
       - Password of an account with access to the package if its located on a file share. Only needed if the winrm user doesn't have access to the package. Also specify user_name for this to function properly.
     default: null
     required: false
+  expected_return_code:
+    description:
+      - If the package exits with a different return code than 0, this can be used to set a comma-separated list of allowed return codes.
 '''
 
 EXAMPLES = '''
@@ -91,5 +94,10 @@ EXAMPLES = '''
     path: "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
     product_id: "{0240359E-6A4C-4884-9E94-B397A02D893C}"
     state: absent
+- name: install a package that may return 1301
+  win_package:
+    path: "somepath.exe"
+    product_id: "{0240359E-6A4C-4884-9E94-B397A02D893C}"
+    expected_return_code: "0,1301"
 '''
 
