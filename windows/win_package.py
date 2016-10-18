@@ -71,7 +71,6 @@ options:
     default: null
     required: false
   expected_return_code:
-    version_added: "1.7"
     description:
       - If the package exits with a different return code than 0, this can be used to set a comma-separated list of allowed return codes.
 '''
