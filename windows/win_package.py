@@ -73,6 +73,8 @@ options:
   expected_return_code:
     description:
       - If the package exits with a different return code than 0, this can be used to set a comma-separated list of allowed return codes.
+    default: null
+    required: false
 '''
 
 EXAMPLES = '''
